@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>localStorage测试</title>
+	</head>
+	<body>
+		<div id="app">
+			<chat :str="vueStr"></chat>
+		</div>
+
+		<script src="js/vue.min.js"></script>
+		<script>
+			var myChat = {
+				props: ['name', 'content', 'str'],
+				methods: {
+					updateChat() {
+						var strName = this.name.replace(/(^\s*)|(\s*$)/g, '');
+						var strContent = this.content.replace(/(^\s*)|(\s*$)/g, '');
+
+						if (strName == '' || strName == undefined || strName == null) {
+							alert("用户名不能为空");
+						} else if (strContent == '' || strContent == undefined || strContent == null) {
+							alert("内容不能为空");
+						} else {
+							if (this.str == null) {
+								this.str = "";
+								this.str += "<div><span style='color:#00DDDD'>"+this.name+"</span>：<b>"+this.content+"<b></div><br/>";
+								//localStorage.str += this.str;
+								localStorage.setItem("str", this.str);
+							} else {
+								this.str += "<div><span style='color:#00DDDD'>"+this.name+"</span>：<b>"+this.content+"<b></div><br/>";
+								//localStorage.str += this.str;
+								localStorage.setItem("str", this.str);
+							}
+
+						}
+					}
+				},
+				template: `<div>
+							<p>用  户  名：<input type="text" id="name" v-model="name" style="width: 200px;"></p>
+							<p>评论内容:<textarea id="content" cols="40" v-model="content" rows="10" style="resize: none;"></textarea></p>
+							<button @click='updateChat'>发布</button><br/>
+							<div v-html="str" style="border: 1px solid black;width:400px;height:250px;overflow-y:auto;">
+								{{ str }}
+							</div>
+						</div>`
+			}
+
+			Vue.component("chat", myChat);
+
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					vueStr: "",
+				},
+				mounted() {
+					<!-- alert(localStorage.getItem("str")); -->
+					this.vueStr = localStorage.getItem("str");
+				<!-- 	localStorage.clear(); -->
+				}
+			})
+		</script>
+	</body>
+</html>

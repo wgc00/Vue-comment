@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>评论室</title>
+		<script src="js/vue.js" type="text/javascript"></script>
+	</head>
+	<body>
+
+		<div id="commentApp">
+			<!-- @严重区分大小写，不能使用大写的字母 还有斜杠" - " 引号问题 -->
+			<!-- @emitdata 是自己定义的接收数据的方式 对应this.$emit的发送数据 -->
+			<cinput @emitdata="receivedata"></cinput>
+			<clist :comments="comments" @deldate="delDate"></clist>
+		</div>
+		<!-- <script src="vue-module-js/commentInput.js"></script>
+		<script src="vue-module-js/commentList.js"></script>
+		<script src="vue-module-js/commentItem.js"></script> -->
+		<script type="module">
+			//首先要定义一个发表内容的组件
+			//定义一个内容列表的组件
+			//定义一个用户名和内容的组件
+			/* Vue.component('cinput', commentInput);
+			Vue.component('clist', commentList);
+			Vue.component('citem', commentItem); */
+			import commentList from './vue-module-js/commentList.js';
+			import commentInput from './vue-module-js/commentInput.js';
+			
+			var vm = new Vue({
+				el: '#commentApp',
+				data: {
+					comments: []
+				},
+				methods: {
+					receivedata(res) {
+						//接收数据添加到comments中
+						this.comments.push(res);
+						//把东西保存到本地缓存中,要先序列化
+						localStorage.setItem('vm-comments', JSON.stringify(this.comments));
+					},
+					delDate(id) {
+						this.comments = this.comments.filter((c) => c.id != id);
+						localStorage.setItem('vm-comments', JSON.stringify(this.comments));
+						//alert(id);
+						console.log(id + "comp");
+					}
+				},
+				created() {
+					// localStorage.clear();
+					const comments = localStorage.getItem('vm-comments');
+					if (comments) {
+						//取出来要反序化
+						this.comments = JSON.parse(comments);
+					}
+				},
+				//局部组件
+				components: {
+					cinput: commentInput,
+					clist: commentList
+				}
+			});
+		</script>
+	</body>
+</html>
